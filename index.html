@@ -32,74 +32,57 @@
 -->
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>GitHub Pages with Apps Script</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Apps Script CORS Test</title>
 </head>
 <body>
-  <h1>Data from Apps Script:</h1>
-  <div id="data-container">
-    <p>Loading...</p>
-  </div>
+    <h1>Google Apps Script CORS Test</h1>
+    <button id="getRequest">Send GET Request</button>
+    <button id="postRequest">Send POST Request</button>
+    <pre id="response"></pre>
 
-  <script>
-    const appsScriptUrl = 'https://script.google.com/macros/s/AKfycbzsvFuEgLR-Ch6_jvym0aO2nPbduBuk-fp-RLg_KFke0aqsYnp5by1D_WYZVEni0wK13w/exec'; // Replace with your Apps Script URL
+    <script>
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbzsdIi7gwChbsKMnbkcwpbWbiFXlgYy0fFYEQfvdDqVVEedbbS8aAIpRnodHg-eZvzHqA/exec'; // Replace with your script URL
 
-    async function fetchData() {
-      try {
-        const response = await fetch(`${appsScriptUrl}?origin=${window.location.origin}`, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-          },
+        document.getElementById('getRequest').addEventListener('click', () => {
+            fetch(scriptURL, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Origin': window.location.origin
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('response').textContent = JSON.stringify(data, null, 2);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
         });
 
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
+        document.getElementById('postRequest').addEventListener('click', () => {
+            const postData = { example: 'This is a test POST request' };
 
-        const data = await response.json();
-        displayData(data);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-        document.getElementById('data-container').innerHTML = `<p>Error: ${error.message || 'Failed to fetch data'}</p>`;
-      }
-    }
-
-    function displayData(data) {
-      const container = document.getElementById('data-container');
-      if (data.error) {
-          container.innerHTML = `<p>Error: ${data.error}</p>`;
-          return;
-      }
-      container.innerHTML = `<p>Message: ${data.message}</p><p>Timestamp: ${data.timestamp}</p>`; // Modify as needed
-    }
-
-    fetchData();
-
-    //POST example.
-    async function postData(){
-        try {
-            const response = await fetch(`${appsScriptUrl}?origin=${window.location.origin}`, {
+            fetch(scriptURL, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Origin': window.location.origin
                 },
-                body: JSON.stringify({example: "data"})
+                body: JSON.stringify(postData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('response').textContent = JSON.stringify(data, null, 2);
+            })
+            .catch(error => {
+                console.error('Error:', error);
             });
-            const data = await response.json();
-            console.log("Post response", data);
-        } catch(error){
-            console.error("Post error", error);
-        }
-    }
-
-    //example button.
-    const button = document.createElement("button");
-    button.textContent = "Post Data";
-    button.addEventListener("click", postData);
-    document.body.appendChild(button);
-
-  </script>
+        });
+    </script>
 </body>
 </html>
