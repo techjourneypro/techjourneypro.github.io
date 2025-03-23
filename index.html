@@ -15,40 +15,20 @@
         const scriptURL = 'https://script.google.com/macros/s/AKfycbyCtCkOXeOwCnM8P1llFKFSBC3DGzs19tE5WjymRDei7xtZC_OriHBeylgmMSEUkF1S5A/exec'; // Replace with your script URL
 
         document.getElementById('getRequest').addEventListener('click', () => {
-            fetch(scriptURL, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Origin': window.location.origin
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                document.getElementById('response').textContent = JSON.stringify(data, null, 2);
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
-        });
-
-        document.getElementById('postRequest').addEventListener('click', () => {
-            const postData = { example: 'This is a test POST request' };
-
-            fetch(scriptURL, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Origin': window.location.origin
-                },
-                body: JSON.stringify(postData)
-            })
-            .then(response => response.json())
-            .then(data => {
-                document.getElementById('response').textContent = JSON.stringify(data, null, 2);
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
+            fetch('https://script.google.com/macros/s/AKfycbyCtCkOXeOwCnM8P1llFKFSBC3DGzs19tE5WjymRDei7xtZC_OriHBeylgmMSEUkF1S5A/exec', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'text/plain;charset=utf-8',
+  },
+  body: 'Your plain text data here',
+})
+  .then(response => response.text())
+  .then(data => {
+    console.log('Response:', data);
+  })
+  .catch(error => {
+    console.error('Error:', error);
+  });
         });
     </script>
 </body>
