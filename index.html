@@ -32,54 +32,74 @@
 -->
 
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Google Apps Script Test</title>
+  <title>GitHub Pages with Apps Script</title>
 </head>
 <body>
-    <h2>Google Apps Script Backend Test</h2>
+  <h1>Data from Apps Script:</h1>
+  <div id="data-container">
+    <p>Loading...</p>
+  </div>
 
-    <button onclick="sendGetRequest()">Send GET Request</button>
-    <button onclick="sendPostRequest()">Send POST Request</button>
+  <script>
+    const appsScriptUrl = 'https://script.google.com/macros/s/AKfycbzsvFuEgLR-Ch6_jvym0aO2nPbduBuk-fp-RLg_KFke0aqsYnp5by1D_WYZVEni0wK13w/exec'; // Replace with your Apps Script URL
 
-    <pre id="response"></pre>
+    async function fetchData() {
+      try {
+        const response = await fetch(`${appsScriptUrl}?origin=${window.location.origin}`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
 
-    <script>
-        const url = "https://script.google.com/macros/s/AKfycbwfGKkpjeagaoGFuIKiiFvvLx43FAALZFMaaI2KlhOVW-WLEMrvrNrQKzxNr3w6Ot1iBA/exec";
-
-        function sendGetRequest() {
-            fetch(url)
-                .then(response => response.json())
-                .then(data => {
-                    document.getElementById("response").textContent =
-                        "GET Response:\n" + JSON.stringify(data, null, 2);
-                    console.log("GET Response from Apps Script:", data);
-                })
-                .catch(err => {
-                    document.getElementById("response").textContent = "GET Error: " + err;
-                    console.error("GET Error:", err);
-                });
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
         }
 
-        function sendPostRequest() {
-            fetch(url, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ test: "data" })
-            })
-                .then(response => response.json())
-                .then(data => {
-                    document.getElementById("response").textContent =
-                        "POST Response:\n" + JSON.stringify(data, null, 2);
-                    console.log("POST Response from Apps Script:", data);
-                })
-                .catch(err => {
-                    document.getElementById("response").textContent = "POST Error: " + err;
-                    console.error("POST Error:", err);
-                });
+        const data = await response.json();
+        displayData(data);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+        document.getElementById('data-container').innerHTML = `<p>Error: ${error.message || 'Failed to fetch data'}</p>`;
+      }
+    }
+
+    function displayData(data) {
+      const container = document.getElementById('data-container');
+      if (data.error) {
+          container.innerHTML = `<p>Error: ${data.error}</p>`;
+          return;
+      }
+      container.innerHTML = `<p>Message: ${data.message}</p><p>Timestamp: ${data.timestamp}</p>`; // Modify as needed
+    }
+
+    fetchData();
+
+    //POST example.
+    async function postData(){
+        try {
+            const response = await fetch(`${appsScriptUrl}?origin=${window.location.origin}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({example: "data"})
+            });
+            const data = await response.json();
+            console.log("Post response", data);
+        } catch(error){
+            console.error("Post error", error);
         }
-    </script>
+    }
+
+    //example button.
+    const button = document.createElement("button");
+    button.textContent = "Post Data";
+    button.addEventListener("click", postData);
+    document.body.appendChild(button);
+
+  </script>
 </body>
 </html>
