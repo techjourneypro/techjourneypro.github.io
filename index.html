@@ -1,114 +1,31 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TechJourney</title>
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-  <script type="text/javascript">
-    (function(c,l,a,r,i,t,y){
-        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
-        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
-        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-    })(window, document, "clarity", "script", "ibd9qa0wxo");
-</script>
+  <title>My GitHub Pages Site</title>
 </head>
 <body>
-  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <a class="navbar-brand" href="#">TechJourney</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav ml-auto">
-        <li class="nav-item">
-          <a class="nav-link" href="#about">About</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#services">Services</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#contact">Contact</a>
-        </li>
-      </ul>
-    </div>
-  </nav>
+  <h1>Test Backend</h1>
+  <button onclick="testBackend()">Send Request</button>
+  <pre id="response"></pre>
 
-  <header class="jumbotron text-center">
-    <h1>Welcome to TechJourney</h1>
-    <p>Embark on your tech journey with us</p>
-    <a class="btn btn-primary" href="#services">Learn More</a>
-  </header>
-
-  <section id="about" class="container">
-    <h2>About Us</h2>
-    <p>TechJourney is a platform dedicated to providing high-quality knowledge and resources to beginners and college students in the field of technology. We aim to guide you through your tech journey with confidence.</p>
-  </section>
-
-  <section id="services" class="container">
-    <h2>Our Services</h2>
-    <ul>
-      <li>Comprehensive tech tutorials</li>
-      <li>Hands-on coding exercises</li>
-      <li>Expert-led webinars</li>
-      <li>Community forums for discussions</li>
-    </ul>
-  </section>
-
-  <section id="contact" class="container">
-    <h2>Contact Us</h2>
-    <p>Have any questions or suggestions? Feel free to reach out to us.</p>
-    <form>
-      <div class="form-group">
-        <label for="name">Name</label>
-        <input type="text" name="name" class="form-control" id="name" placeholder="Enter your name">
-      </div>
-      <div class="form-group">
-        <label for="email">Email</label>
-        <input type="email" name="email" class="form-control" id="email" placeholder="Enter your email">
-      </div>
-      <div class="form-group">
-        <label for="message">Message</label>
-        <textarea class="form-control" name="message" id="message" rows="3" placeholder="Enter your message"></textarea>
-      </div>
-      <button type="submit" class="btn btn-primary">Submit</button>
-      <div id="res" style="color:green;font-size: 14px;"></div>
-    </form>
-  </section>
-
-  <footer class="container text-center">
-    <p>&copy; 2023 TechJourney. All rights reserved.</p>
-  </footer>
-
-  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
   <script>
-    let url = 'https://script.google.com/macros/s/AKfycbzYRDYPVv_zPPAG-7ur3R3BjgaeUemMa7Odv4d34NzGjhJpp1q7WJObCMs-T3I6-vI/exec';
-    let form = document.querySelector('#form');
-    form.addEventListener("submit", (e) => {
-      e.target.querySelector('button').innerHTML = "Submitting...";
-      let formData = new FormData(form);
-      fetch(url, {
-        method: "POST",
-        mode: "no-cors",
-        body: formData
-    }).then((response) => response.text())
-        .then((result) => {
-          e.target.querySelector('button').innerHTML = "Submit";
-          document.getElementById("res").innerHTML = result;
-          form.reset();
-          setTimeout(() => {
-            document.getElementById("res").innerHTML = '';
-          }, 5000);
-        })
-        .catch((error) => {
-          console.log(error);
-          e.target.querySelector('button').innerHTML = "Submit";
-          
+    async function testBackend() {
+      const url = "https://script.google.com/macros/s/xyz123/exec"; // Replace with your Web App URL
+      try {
+        const response = await fetch(url, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ example: "data" })
         });
-        e.preventDefault();
-    });
+        const data = await response.json();
+        document.getElementById("response").textContent = JSON.stringify(data, null, 2);
+      } catch (error) {
+        console.error("Error:", error);
+        document.getElementById("response").textContent = "Error: " + error.message;
+      }
+    }
   </script>
 </body>
 </html>
