@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!--<!DOCTYPE html>
 <html>
 <head>
   <title>My GitHub Pages Site</title>
@@ -27,5 +27,59 @@
       }
     }
   </script>
+</body>
+</html>
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Apps Script Test</title>
+</head>
+<body>
+    <h2>Google Apps Script Backend Test</h2>
+
+    <button onclick="sendGetRequest()">Send GET Request</button>
+    <button onclick="sendPostRequest()">Send POST Request</button>
+
+    <pre id="response"></pre>
+
+    <script>
+        const url = "https://script.google.com/macros/s/AKfycbzcdNG-U-GP6y2UlQoHoSIHmKL0dztPLA5b5hF3bCY99ey01Owuyta3zOoW87tU2Rg1ww/exec";
+
+        function sendGetRequest() {
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById("response").textContent =
+                        "GET Response:\n" + JSON.stringify(data, null, 2);
+                    console.log("GET Response from Apps Script:", data);
+                })
+                .catch(err => {
+                    document.getElementById("response").textContent = "GET Error: " + err;
+                    console.error("GET Error:", err);
+                });
+        }
+
+        function sendPostRequest() {
+            fetch(url, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ test: "data" })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById("response").textContent =
+                        "POST Response:\n" + JSON.stringify(data, null, 2);
+                    console.log("POST Response from Apps Script:", data);
+                })
+                .catch(err => {
+                    document.getElementById("response").textContent = "POST Error: " + err;
+                    console.error("POST Error:", err);
+                });
+        }
+    </script>
 </body>
 </html>
