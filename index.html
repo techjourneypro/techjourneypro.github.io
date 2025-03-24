@@ -1,35 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Google Apps Script CORS Test</title>
+  <meta charset="UTF-8">
+  <title>Iframe postMessage Demo</title>
 </head>
 <body>
-    <h1>Google Apps Script CORS Test</h1>
-    <button id="getRequest">Send GET Request</button>
-    <button id="postRequest">Send POST Request</button>
-    <pre id="response"></pre>
-
-    <script>
-        const scriptURL = 'https://script.google.com/macros/s/AKfycbyCtCkOXeOwCnM8P1llFKFSBC3DGzs19tE5WjymRDei7xtZC_OriHBeylgmMSEUkF1S5A/exec'; // Replace with your script URL
-
-        document.getElementById('getRequest').addEventListener('click', () => {
-            fetch('https://script.google.com/macros/s/AKfycbyCtCkOXeOwCnM8P1llFKFSBC3DGzs19tE5WjymRDei7xtZC_OriHBeylgmMSEUkF1S5A/exec', {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'text/plain;charset=utf-8',
-  },
-  body: 'Your plain text data here',
-})
-  .then(response => response.text())
-  .then(data => {
-    console.log('Response:', data);
-  })
-  .catch(error => {
-    console.error('Error:', error);
-  });
-        });
-    </script>
+  <h3>Google Apps Script via iframe with postMessage</h3>
+  <iframe id="gasFrame" style="display:none;" src="https://script.google.com/macros/s/AKfycbzbM6YsXEEZI7RVzy1tH_3XbzjJivEE3mZ8X2I2JGsl/dev"></iframe>
+  <pre id="output"></pre>
+  <script>
+    window.addEventListener('message', (event) => {
+      // You may check event.origin for security
+      document.getElementById('output').textContent = JSON.stringify(event.data, null, 2);
+      console.log('Received from iframe:', event.data);
+    }, false);
+  </script>
 </body>
 </html>
