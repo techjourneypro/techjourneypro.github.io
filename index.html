@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -72,33 +72,7 @@
         </section>
     </main>
 
-    <!-- Login Modal -->
-    <div id="loginModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeLoginModal()">&times;</span>
-            <h2>Login</h2>
-            <form id="loginForm" onsubmit="handleLogin(event)">
-                <input type="email" placeholder="Email" required>
-                <input type="password" placeholder="Password" required>
-                <button type="submit">Login</button>
-            </form>
-        </div>
-    </div>
-
-    <!-- Signup Modal -->
-    <div id="signupModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeSignupModal()">&times;</span>
-            <h2>Sign Up</h2>
-            <form id="signupForm" onsubmit="handleSignup(event)">
-                <input type="text" placeholder="Full Name" required>
-                <input type="email" placeholder="Email" required>
-                <input type="password" placeholder="Password" required>
-                <button type="submit">Sign Up</button>
-            </form>
-        </div>
-    </div>
-
+    <!-- Footer with Quick Links -->
     <footer>
         <div class="footer-content">
             <div class="footer-section">
@@ -112,6 +86,8 @@
                     <li><a href="#resources">Resources</a></li>
                     <li><a href="#about">About Us</a></li>
                     <li><a href="#contact">Contact</a></li>
+                    <!-- Feedback quick link -->
+                    <li><a href="javascript:void(0)" onclick="openFeedbackModal()">Feedback</a></li>
                 </ul>
             </div>
             <div class="footer-section">
@@ -128,7 +104,109 @@
         </div>
     </footer>
 
+    <!-- Feedback Modal -->
+    <div id="feedbackModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeFeedbackModal()">&times;</span>
+            <h2>We Value Your Feedback</h2>
+            <form id="contactForm">
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name" placeholder="Your name" required>
+                
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" placeholder="Your email" required>
+                
+                <label for="phone">Phone Number:</label>
+                <input type="tel" id="phone" name="phone" placeholder="Your phone number" required>
+                
+                <label for="message">Message:</label>
+                <textarea id="message" name="message" placeholder="Your message" rows="4" required></textarea>
+                
+                <button type="submit">Send Message</button>
+            </form>
+            <div id="response"></div>
+        </div>
+    </div>
+
     <script src="js/main.js"></script>
     <script src="js/api.js"></script>
+
+    <script type="text/javascript">
+        // Feedback modal logic
+        function openFeedbackModal() {
+            document.getElementById('feedbackModal').style.display = 'block';
+        }
+
+        function closeFeedbackModal() {
+            document.getElementById('feedbackModal').style.display = 'none';
+        }
+
+        // Capture form submission
+        const form = document.getElementById('contactForm');
+        const responseDiv = document.getElementById('response');
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const phone = document.getElementById('phone').value;
+            const message = document.getElementById('message').value;
+
+            // Format data as plain text (key=value&key=value)
+            const plainTextData = `name=${encodeURIComponent(name)}&email=${encodeURIComponent(email)}&phone=${encodeURIComponent(phone)}&message=${encodeURIComponent(message)}`;
+
+            // Send POST request to Google Apps Script
+            fetch('https://script.google.com/macros/s/AKfycbxMWRWOSxjblQ3lnxMnqFHR1xFktdg3h8sPiN8qGbsj4ZZybscoLDOJoAzZulUkCo0A/exec', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'text/plain;charset=utf-8',
+                },
+                body: plainTextData,
+            })
+            .then(response => response.text())
+            .then(data => {
+                responseDiv.textContent = data; // Display the response
+                form.reset(); // Clear the form
+            })
+            .catch(error => {
+                responseDiv.textContent = `Error: ${error.message}`;
+            });
+        });
+
+        // Cal.com floating popup integration
+        (function (C, A, L) { 
+            let p = function (a, ar) { a.q.push(ar); }; 
+            let d = C.document; 
+            C.Cal = C.Cal || function () { 
+                let cal = C.Cal; 
+                let ar = arguments; 
+                if (!cal.loaded) { 
+                    cal.ns = {}; 
+                    cal.q = cal.q || []; 
+                    d.head.appendChild(d.createElement("script")).src = A; 
+                    cal.loaded = true; 
+                } 
+                if (ar[0] === L) { 
+                    const api = function () { 
+                        p(api, arguments); 
+                    }; 
+                    const namespace = ar[1]; 
+                    api.q = api.q || []; 
+                    if(typeof namespace === "string"){
+                        cal.ns[namespace] = cal.ns[namespace] || api;
+                        p(cal.ns[namespace], ar);
+                        p(cal, ["initNamespace", namespace]);
+                    } else p(cal, ar); 
+                    return; 
+                } 
+                p(cal, ar); 
+            }; 
+        })(window, "https://app.cal.com/embed/embed.js", "init");
+
+        Cal("init", "30min", {origin:"https://app.cal.com"});
+        Cal.ns["30min"]("floatingButton", {"calLink":"techjourney-pro-aviuee/30min","config":{"layout":"month_view"}}); 
+        Cal.ns["30min"]("ui", {"hideEventTypeDetails":false,"layout":"month_view"});
+    </script>
 </body>
-</html> 
+</html>
